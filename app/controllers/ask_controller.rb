@@ -6,7 +6,8 @@ require "#{Rails.root}/lib/ask_openai.rb"
 class AskController < ApplicationController
   def ask
     openai = AskOpenai.new
-    answer = openai.ask(params[:question])
+    question = params[:question] || 'What is a minimalist entrepreneur?'
+    answer = openai.ask(question)
     render json: { answer: }
   end
 end
