@@ -38,31 +38,11 @@ class AskOpenai
     @separator_len = SEPARATOR.size
   end
 
-  sig { params(question: String).returns(String) }
+  sig { params(question: String).returns([String, String]) }
   def ask(question)
-    q = question.strip
-    q << '?' unless q.end_with?('?')
-
-    # previous_question = Question.objects.filter(question=question_asked).first()
-
-    # if previous_question:
-    #     print("previously asked and answered: " + previous_question.answer)
-    #     previous_question.ask_count = previous_question.ask_count + 1
-    #     previous_question.save()
-    #     return JsonResponse({ "question": previous_question.question, "answer": previous_question.answer, "id": previous_question.pk })
-
     pages = load_sections('assets/book.pdf.pages.csv')
     document_embeddings = load_embeddings('assets/book.pdf.embeddings.csv')
-    answer, _context = answer_query_with_context(q, document_embeddings, pages)
-
-    # project_uuid = '6314e4df'
-    # voice_uuid = '0eb3a3f1'
-
-    # question = Question(question=question_asked, answer=answer, context=context)
-    # question.save()
-
-    # return JsonResponse({ "question": question.question, "answer": answer, "id": question.pk })
-    answer
+    answer_query_with_context(question, document_embeddings, pages)
   end
 
   private
