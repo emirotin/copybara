@@ -106,6 +106,7 @@ GEM
     drb (2.1.1)
       ruby2_keywords
     erubi (1.12.0)
+    execjs (2.9.1)
     faraday (2.7.11)
       base64
       faraday-net_http (>= 2.0, < 3.1)
@@ -139,8 +140,6 @@ GEM
       net-smtp
     marcel (1.0.2)
     matrix (0.4.2)
-    mechanize (1.0.0)
-      nokogiri (>= 1.2.1)
     mini_mime (1.1.5)
     minitest (5.20.0)
     msgpack (1.7.2)
@@ -175,6 +174,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.7.1)
     rack (3.0.8)
+    rack-proxy (0.7.7)
+      rack
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -218,6 +219,12 @@ GEM
       yarp (>= 0.11.0)
     rdoc (6.5.0)
       psych (>= 4.0.0)
+    react_on_rails (13.3.1)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
     regexp_parser (2.8.2)
     reline (0.3.9)
       io-console (~> 0.5)
@@ -246,6 +253,12 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    semantic_range (3.0.0)
+    shakapacker (7.0.1)
+      activesupport (>= 5.2)
+      rack-proxy (>= 0.6.1)
+      railties (>= 5.2)
+      semantic_range (>= 2.3.0)
     sorbet (0.5.11077)
       sorbet-static (= 0.5.11077)
     sorbet-runtime (0.5.11077)
@@ -292,8 +305,6 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
-    watchman (0.1.1)
-      mechanize (= 1.0.0)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -327,9 +338,11 @@ DEPENDENCIES
   jbuilder
   puma (>= 5.0)
   rails (~> 7.1.1)
+  react_on_rails (= 13.3.1)
   rubocop
   ruby-openai
   selenium-webdriver
+  shakapacker (= 7.0.1)
   sorbet
   sorbet-runtime
   sprockets-rails
@@ -338,7 +351,6 @@ DEPENDENCIES
   tapioca
   turbo-rails
   tzinfo-data
-  watchman
   web-console
 
 RUBY VERSION

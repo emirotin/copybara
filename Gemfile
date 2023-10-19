@@ -43,6 +43,9 @@ gem 'bootsnap', require: false
 
 gem 'ruby-openai'
 
+gem 'react_on_rails', '13.3.1'
+gem 'shakapacker', '7.0.1'
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
