@@ -63,12 +63,10 @@ const App = () => {
       />
       {error && <div className="error">{error}</div>}
       {answer !== null ? (
-        <div id="answer-container" className="hidden showing">
+        <div className="answer-container">
           <strong>Answer:</strong>
-          <div id="answer">{answer}</div>
-          <button id="ask-another-button" onClick={() => setAnswer(null)}>
-            Ask another question
-          </button>
+          <div>{answer}</div>
+          <button onClick={() => setAnswer(null)}>Ask another question</button>
         </div>
       ) : (
         <div className="buttons">
