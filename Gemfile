@@ -53,6 +53,7 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows]
 
+  gem 'dotenv'
   gem 'dotenv-rails'
 end
 
@@ -81,18 +82,18 @@ gem 'sorbet', group: :development
 gem 'sorbet-runtime'
 gem 'tapioca', require: false, group: :development
 
-gem "dockerfile-rails", ">= 1.5", :group => :development
+gem 'dockerfile-rails', '>= 1.5', group: :development
 
-gem "pg", "~> 1.5"
+gem 'pg', '~> 1.5'
 
-gem "matrix", "~> 0.4.2"
+gem 'matrix', '~> 0.4.2'
 
-gem "sentry-ruby", "~> 5.12"
+gem 'sentry-ruby', '~> 5.12'
 
-gem "sentry-rails", "~> 5.12"
+gem 'sentry-rails', '~> 5.12'
 
-gem "optparse", "~> 0.3.1"
+gem 'optparse', '~> 0.3.1'
 
-gem "tokenizers", "~> 0.4.1"
+gem 'tokenizers', '~> 0.4.1'
 
-gem "pdf-reader", "~> 2.11"
+gem 'pdf-reader', '~> 2.11'

@@ -7,6 +7,8 @@ require 'tokenizers'
 require 'sorbet-runtime'
 require 'pdf-reader'
 require 'csv'
+require 'openai'
+require 'dotenv/load'
 
 pdf_path = T.let(nil, T.any(String, NilClass))
 OptionParser.new do |opt|
@@ -21,6 +23,11 @@ MODEL_NAME = 'curie'
 
 DOC_EMBEDDINGS_MODEL = "text-search-#{MODEL_NAME}-doc-001".freeze
 
+OpenAI.configure do |config|
+  config.access_token = ENV.fetch('OPENAI_API_KEY')
+  config.organization_id = ENV.fetch('OPENAI_ORG_ID')
+end
+
 # PdfToPagesEmbeddings
 class PdfToPagesEmbeddings
   extend T::Sig
@@ -28,8 +35,10 @@ class PdfToPagesEmbeddings
   def initialize(pdf_path)
     @pdf_path = pdf_path
     @tokenizer = Tokenizers.from_pretrained('gpt2')
+    @openai_client = OpenAI::Client.new
   end
 
+  sig { params(text: String).returns(Integer) }
   # count the number of tokens in a string
   def count_tokens(text)
     @tokenizer.encode(text).tokens.size
@@ -44,25 +53,69 @@ class PdfToPagesEmbeddings
     ["Page #{index}", content, count_tokens(content) + 4]
   end
 
+  sig { returns(T::Array[[String, String, Integer]]) }
   def extract_pages_from_pdf
     reader = PDF::Reader.new(@pdf_path)
     i = 1
-    CSV.open(File.join(File.dirname(__FILE__), '../lib/assets/book.pdf.pages.csv'), 'w') do |csv|
-      csv << %w[title content tokens]
+    res = T.let([], T::Array[[String, String, Integer]])
 
-      reader.pages.each do |page|
-        page_content = extract_page_content(page.text, i)
-        next if page_content.nil?
+    reader.pages.each do |page|
+      page_content = extract_page_content(page.text, i)
+      next if page_content.nil?
 
-        csv << page_content
-        i += 1
-      end
+      res << page_content
+      i += 1
+    end
+
+    res
+  end
+
+  sig { params(text: String, model: String).returns(T::Array[Float]) }
+  def get_embedding(text, model)
+    response = @openai_client.embeddings(
+      parameters: {
+        model:,
+        input: text
+      }
+    )
+
+    T.let(response.dig('data', 0, 'embedding'), T::Array[Float])
+  end
+
+  sig { params(text: String).returns(T::Array[Float]) }
+  def get_doc_embedding(text)
+    get_embedding(text, DOC_EMBEDDINGS_MODEL)
+  end
+
+  sig { params(pdf_pages: T::Array[[String, String, Integer]]).returns(T::Array[[String, T::Array[Float]]]) }
+  # Create an embedding for each page of the PDF using the OpenAI Embeddings API.
+  def compute_doc_embeddings(pdf_pages)
+    pdf_pages.map do |title, content|
+      [title, get_doc_embedding(content)]
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def run
-    extract_pages_from_pdf
+    pdf_pages = extract_pages_from_pdf
+
+    CSV.open(File.join(File.dirname(__FILE__), '../lib/assets/book.pdf.pages.csv'), 'w') do |csv|
+      csv << %w[title content tokens]
+      pdf_pages.each do |page|
+        csv << page
+      end
+    end
+
+    doc_embeddings = compute_doc_embeddings(pdf_pages)
+
+    CSV.open(File.join(File.dirname(__FILE__), '../lib/assets/book.pdf.embeddings.csv'), 'w') do |csv|
+      csv << ['title', (0..4095).to_a].flatten
+      doc_embeddings.each do |row|
+        csv << row.flatten
+      end
+    end
   end
+  # rubocop:enable Metrics/AbcSize
 end
 
 PdfToPagesEmbeddings.new(pdf_path).run

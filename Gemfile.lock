@@ -359,6 +359,7 @@ DEPENDENCIES
   capybara
   debug
   dockerfile-rails (>= 1.5)
+  dotenv
   dotenv-rails
   erb-formatter
   importmap-rails
