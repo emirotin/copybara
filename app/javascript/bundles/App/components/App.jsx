@@ -62,6 +62,7 @@ const App = () => {
         onChange={(e) => setQuestion(e.target.value)}
       />
       {error && <div className="error">{error}</div>}
+      {isLoading && <p>Loading...</p>}
       {answer !== null ? (
         <div className="answer-container">
           <strong>Answer:</strong>
