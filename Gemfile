@@ -67,6 +67,8 @@ group :development do
   # gem "spring"
 
   gem 'rubocop'
+
+  gem 'erb-formatter'
 end
 
 group :test do

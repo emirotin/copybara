@@ -3,5 +3,5 @@ Rails.application.routes.draw do
 
   root 'ask#index'
 
-  get 'ask' => 'ask#ask', as: :ask
+  post 'ask' => 'ask#ask', as: :ask
 end

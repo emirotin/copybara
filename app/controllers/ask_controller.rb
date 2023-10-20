@@ -8,11 +8,14 @@ class AskController < ApplicationController
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
   def ask
-    openai = AskOpenai.new
+    question = params[:question]
 
-    question = params[:question] || 'What is a minimalist entrepreneur?'
+    render nothing: true, status: :bad_request and return if question.nil? || question.empty?
+
     question = question.strip
     question << '?' unless question.end_with?('?')
+
+    openai = AskOpenai.new
 
     db_question = Question.find_by(question:)
 

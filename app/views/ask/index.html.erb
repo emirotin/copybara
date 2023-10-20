@@ -1,1 +1,18 @@
-<%= react_component("App", prerender: true) %>
+<div class="header">
+  <div class="logo">
+    <span><%= image_tag "book.png", loading: "lazy" %></span>
+    <h1>Ask Sahil's Book</h1>
+  </div>
+</div>
+
+<div class="main">
+  <p class="credits">This is
+    <a
+      href="https://gumroad.notion.site/Product-engineering-challenge-f7aa85150edd41eeb3537aae4632619f"
+      target="_blank"
+    >Product engineering challenge</a>
+    done by
+    <a href="https://mirotin.online" target="_blank">Eugene Mirotin</a>
+  </p>
+  <%= react_component("App", prerender: true) %>
+</div>
