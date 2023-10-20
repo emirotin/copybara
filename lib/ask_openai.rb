@@ -28,7 +28,6 @@ OpenAI.configure do |config|
   config.organization_id = ENV.fetch('OPENAI_ORG_ID')
 end
 
-# rubocop:disable Metrics/ClassLength
 # AskOpenai class to handle all OpenAI API calls
 class AskOpenai
   extend T::Sig
@@ -121,7 +120,6 @@ class AskOpenai
   end
 
   # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
   sig do
     params(question: String, context_embeddings: T::Hash[String, T::Array[Float]],
            pages: T::Array[{ title: String, content: String, tokens: Integer }]).returns(T::Array[String])
@@ -148,9 +146,7 @@ class AskOpenai
     chosen_sections
   end
   # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
 
-  # rubocop:disable Metrics/MethodLength
   # rubocop:disable Layout/LineLength
   sig { returns(T::Array[String]) }
   def prompt_pre
@@ -169,7 +165,6 @@ class AskOpenai
       "Q: How do you know, when to quit\n\nA: When I'm bored, no longer learning, not earning enough, getting physically unhealthy, etc… loads of reasons. I think the default should be to “quit” and work on something new. Few things are worth holding your attention for a long period of time."
     ]
   end
-  # rubocop:enable Metrics/MethodLength
   # rubocop:enable Layout/LineLength
 
   sig do
@@ -202,4 +197,3 @@ class AskOpenai
     [T.let(response.dig('choices', 0, 'text'), String).strip, context]
   end
 end
-# rubocop:enable Metrics/ClassLength

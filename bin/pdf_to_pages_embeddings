@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+# typed: true
+
+require 'optparse'
+require 'tokenizers'
+require 'sorbet-runtime'
+require 'pdf-reader'
+require 'csv'
+
+pdf_path = T.let(nil, T.any(String, NilClass))
+OptionParser.new do |opt|
+  opt.on('--pdf PDF') { |o| pdf_path = o }
+end.parse!
+
+raise 'PDF is not set' if pdf_path.nil?
+
+COMPLETIONS_MODEL = 'text-davinci-003'
+
+MODEL_NAME = 'curie'
+
+DOC_EMBEDDINGS_MODEL = "text-search-#{MODEL_NAME}-doc-001".freeze
+
+# PdfToPagesEmbeddings
+class PdfToPagesEmbeddings
+  extend T::Sig
+
+  def initialize(pdf_path)
+    @pdf_path = pdf_path
+    @tokenizer = Tokenizers.from_pretrained('gpt2')
+  end
+
+  # count the number of tokens in a string
+  def count_tokens(text)
+    @tokenizer.encode(text).tokens.size
+  end
+
+  sig { params(page_text: String, index: Integer).returns(T.any(NilClass, [String, String, Integer])) }
+  # Extract the text from the page
+  def extract_page_content(page_text, index)
+    return nil if page_text.empty?
+
+    content = page_text.split.join(' ')
+    ["Page #{index}", content, count_tokens(content) + 4]
+  end
+
+  def extract_pages_from_pdf
+    reader = PDF::Reader.new(@pdf_path)
+    i = 1
+    CSV.open(File.join(File.dirname(__FILE__), '../lib/assets/book.pdf.pages.csv'), 'w') do |csv|
+      csv << %w[title content tokens]
+
+      reader.pages.each do |page|
+        page_content = extract_page_content(page.text, i)
+        next if page_content.nil?
+
+        csv << page_content
+        i += 1
+      end
+    end
+  end
+
+  def run
+    extract_pages_from_pdf
+  end
+end
+
+PdfToPagesEmbeddings.new(pdf_path).run

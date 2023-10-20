@@ -90,3 +90,9 @@ gem "matrix", "~> 0.4.2"
 gem "sentry-ruby", "~> 5.12"
 
 gem "sentry-rails", "~> 5.12"
+
+gem "optparse", "~> 0.3.1"
+
+gem "tokenizers", "~> 0.4.1"
+
+gem "pdf-reader", "~> 2.11"

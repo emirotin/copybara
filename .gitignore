@@ -41,3 +41,5 @@ sorbet/rbi/hidden-definitions/errors.txt
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+book.pdf
