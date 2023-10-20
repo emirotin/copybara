@@ -86,3 +86,7 @@ gem "dockerfile-rails", ">= 1.5", :group => :development
 gem "pg", "~> 1.5"
 
 gem "matrix", "~> 0.4.2"
+
+gem "sentry-ruby", "~> 5.12"
+
+gem "sentry-rails", "~> 5.12"

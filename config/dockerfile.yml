@@ -2,4 +2,7 @@
 
 ---
 options:
+  label:
+    fly_launch_runtime: rails
   postgresql: true
+  sentry: true
