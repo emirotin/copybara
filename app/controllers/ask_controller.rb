@@ -20,9 +20,7 @@ class AskController < ApplicationController
     db_question = Question.find_by(question:)
 
     if db_question
-      puts "previously asked and answered: #{db_question.answer}"
       db_question.ask_count += 1
-
     else
       answer, context = openai.ask(question)
       db_question = Question.create(question:, answer:, context:, ask_count: 1)

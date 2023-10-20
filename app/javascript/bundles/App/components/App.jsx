@@ -1,17 +1,38 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 
 const DEFAULT_QUESTION = "What is The Minimalist Entrepreneur about?";
 
-const App = (props) => {
-  const [question, setQuestion] = useState(DEFAULT_QUESTION);
+const LUCKY_QUESTIONS = [
+  DEFAULT_QUESTION,
+  "What is a minimalist entrepreneur?",
+  "What is your definition of community?",
+  "How do I decide what kind of business I should start?",
+];
 
-  const onSubmit = useCallback((e) => {
-    e.preventDefault();
+const App = () => {
+  const formRef = useRef();
+  const [question, setQuestion] = useState(DEFAULT_QUESTION);
+  const [answer, setAnswer] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const onSubmit = useCallback((e, questionOverride) => {
+    e.preventDefault?.();
+
+    const questionToAsk = questionOverride || question;
+
+    if (!questionToAsk) {
+      return;
+    }
+
+    setAnswer(null);
+    setIsLoading(true);
+    setError(null);
 
     const csrfToken = document.querySelector("[name=csrf-token]").content;
 
     const { action, method } = e.target;
-    const body = { question };
+    const body = { question: questionToAsk };
     fetch(action, {
       method,
       headers: {
@@ -23,23 +44,57 @@ const App = (props) => {
       .then((response) => response.json())
       .then((data) => {
         const { answer } = data;
-        console.log(answer);
+        setAnswer(answer);
+      })
+      .catch((error) => {
+        setError(error.message || "Something went wrong");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
   return (
-    <form action="/ask" method="post" onSubmit={onSubmit}>
+    <form action="/ask" method="post" onSubmit={onSubmit} ref={formRef}>
       <textarea
         name="question"
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
       />
-      <div className="buttons">
-        <button type="submit">Ask question</button>
-        <button className="lucky-button" type="button">
-          I'm feeling lucky
-        </button>
-      </div>
+      {error && <div className="error">{error}</div>}
+      {answer !== null ? (
+        <div id="answer-container" className="hidden showing">
+          <strong>Answer:</strong>
+          <div id="answer">{answer}</div>
+          <button id="ask-another-button" onClick={() => setAnswer(null)}>
+            Ask another question
+          </button>
+        </div>
+      ) : (
+        <div className="buttons">
+          <button type="submit">Ask question</button>
+          <button
+            className="lucky-button"
+            type="button"
+            onClick={() => {
+              const candidateQuestions = LUCKY_QUESTIONS.filter(
+                (candidateQuestion) => candidateQuestion !== question
+              );
+              const randomIndex = Math.floor(
+                Math.random() * candidateQuestions.length
+              );
+              const luckyQuestion = candidateQuestions[randomIndex];
+              setQuestion(luckyQuestion);
+              setTimeout(
+                () => onSubmit({ target: formRef.current }, luckyQuestion),
+                50
+              );
+            }}
+          >
+            I'm feeling lucky
+          </button>
+        </div>
+      )}
     </form>
   );
 };

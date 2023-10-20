@@ -160,3 +160,13 @@ footer {
   border-color: #eee;
   color: #444;
 }
+
+#answer-container {
+  margin: 1em 0;
+}
+
+.error {
+  margin: 1em 0;
+  color: red;
+  font-weight: bold;
+}
