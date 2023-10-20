@@ -99,6 +99,8 @@ GEM
     debug (1.8.0)
       irb (>= 1.5.0)
       reline (>= 0.3.1)
+    dockerfile-rails (1.5.10)
+      rails (>= 3.0.0)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -168,6 +170,7 @@ GEM
     parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
+    pg (1.5.4)
     prettier_print (1.2.1)
     psych (5.1.1.1)
       stringio
@@ -335,10 +338,13 @@ DEPENDENCIES
   bootsnap
   capybara
   debug
+  dockerfile-rails (>= 1.5)
   dotenv-rails
   erb-formatter
   importmap-rails
   jbuilder
+  matrix (~> 0.4.2)
+  pg (~> 1.5)
   puma (>= 5.0)
   rails (~> 7.1.1)
   react_on_rails (= 13.3.1)
